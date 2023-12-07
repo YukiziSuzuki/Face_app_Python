@@ -58,8 +58,8 @@ def get_all_records(cursor):
 def display_all_records(records, st_db_info):
 
     # データベースのレコードを表示
-    for record in records:
-        st_db_info.text(record)
+    for i in range(len(records)):
+        st_element[i].text(records[i])
 
 
 
@@ -88,7 +88,9 @@ def main():
     # データベースのカラム名を取得
     st.write("ID, 　　名前, 　学年, 　入室, 　退室, 　帰宅, 　　timestamp")
 
-    st_db_info = st.empty()
+    st_db_info = []
+    for i in range(10):
+        st_db_info.append(st.empty())
 
 
     while True:
