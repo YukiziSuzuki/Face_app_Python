@@ -5,7 +5,8 @@ from datetime import datetime
 def create_table(cursor):
     create_table_query = '''
         CREATE TABLE IF NOT EXISTS user_records (
-            name TEXT PRIMARY KEY NOT NULL,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
             year TEXT NOT NULL,
             Leaving_The_Room TEXT NOT NULL,
             Out_Of_The_Room TEXT NOT NULL,
@@ -30,16 +31,16 @@ def insert_data(cursor, name, year, leaving, out_of_room, going_home):
         print("エラー: 主キーが重複しています。")
 
 def main():
-    conn = sqlite3.connect('your_database_name.db')
+    conn = sqlite3.connect('Lab_menber.db')
     cursor = conn.cursor()
 
     create_table(cursor)
 
     name = input("名前: ")
     year = input("年: ")
-    leaving = input("Leaving The Roomの時間: ")
-    out_of_room = input("Out Of The Roomの時間: ")
-    going_home = input("Going Homeの時間: ")
+    leaving = input("Leaving The Room: ")
+    out_of_room = input("Out Of The Room: ")
+    going_home = input("Going Home: ")
 
     insert_data(cursor, name, year, leaving, out_of_room, going_home)
 

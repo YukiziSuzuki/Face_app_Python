@@ -1,7 +1,3 @@
-#######データベースに登録されている内容の表示#######
-
-
-
 import sqlite3
 
 def display_records(cursor):
@@ -12,13 +8,13 @@ def display_records(cursor):
     if not records:
         print("データベースにはまだレコードがありません。")
     else:
-        print("{:<15} {:<10} {:<15} {:<15} {:<15} {:<20}".format("Name", "Year", "Leaving", "Out of Room", "Going Home", "Timestamp"))
-        print("-" * 90)
+        print("{:<5} {:<15} {:<10} {:<15} {:<15} {:<15} {:<20}".format("ID", "Name", "Year", "Leaving room", "Out of Room", "Going Home", "Timestamp"))
+        print("-" * 100)
         for record in records:
-            print("{:<15} {:<10} {:<15} {:<15} {:<15} {:<20}".format(record[0], record[1], record[2], record[3], record[4], record[5]))
+            print("{:<5} {:<15} {:<16} {:<15} {:<14} {:<7} {:<20}".format(record[0], record[1], record[2], record[3], record[4], record[5], record[6]))
 
 def main():
-    conn = sqlite3.connect('your_database_name.db')
+    conn = sqlite3.connect('Lab_menber.db')
     cursor = conn.cursor()
 
     display_records(cursor)
