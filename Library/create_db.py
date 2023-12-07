@@ -38,10 +38,9 @@ def main():
 
     name = input("名前: ")
     year = input("年: ")
-    leaving = input("Leaving The Room: ")
-    out_of_room = input("Out Of The Room: ")
-    going_home = input("Going Home: ")
-
+    leaving = "X"
+    out_of_room = "X"
+    going_home = "O"
     insert_data(cursor, name, year, leaving, out_of_room, going_home)
 
     conn.commit()

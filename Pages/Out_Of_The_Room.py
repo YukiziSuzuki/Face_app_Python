@@ -1,4 +1,4 @@
-# 顔認識を行い、入室処理を行うページ
+# 顔認識を行い、外出処理を行うページ
 
 import streamlit as st
 import cv2
@@ -21,9 +21,9 @@ def load_known_faces(directory="known_faces"):
 
     return known_faces, known_names
 
-def update_leaving_room_and_timestamp(cursor, name, new_leaving_room):
+def update_out_of_the_room_and_timestamp(cursor, name, new_leaving_room):
     # ユーザーのデータを取得
-    select_query = "SELECT Leaving_The_Room FROM user_records WHERE name = ?"
+    select_query = "SELECT Out_Of_The_Room FROM user_records WHERE name = ?"
     cursor.execute(select_query, (name,))
     current_leaving_room = cursor.fetchone()
 
@@ -34,11 +34,11 @@ def update_leaving_room_and_timestamp(cursor, name, new_leaving_room):
 
     # Leaving_The_Room が "O" の場合は処理を行わずに関数を終了
     if current_leaving_room[0] == "O":
-        print("Leaving_The_Room が 'O' です。処理をスキップします。")
+        print("Out_Of_The_Room が 'O' です。処理をスキップします。")
         return
 
     # 更新クエリの実行
-    update_query = "UPDATE user_records SET Leaving_The_Room = 'O', Out_Of_The_Room = 'X', Going_home= 'X', timestamp = ? WHERE name = ?"
+    update_query = "UPDATE user_records SET Leaving_The_Room = 'X', Out_Of_The_Room = 'O', Going_home= 'X', timestamp = ? WHERE name = ?"
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     data = (timestamp, name)
 
@@ -55,18 +55,18 @@ def get_all_records(cursor):
     records = cursor.fetchall()
     return records
 
-def display_all_records(records, st_element):
-    # データベースの全内容を表示
-    st_element.text("データベースの全内容:")
+def display_all_records(records, st_db_info):
+
+    # データベースのレコードを表示
     for record in records:
-        st_element.text(record)
+        st_db_info.text(record)
 
 
 
 
 
 def main():
-    st.title("入室")
+    st.title("外出")
 
     conn = sqlite3.connect("Lab_menber.db")
     c = conn.cursor()
@@ -87,7 +87,7 @@ def main():
 
     # データベースのカラム名を取得
     st.write("ID, 　　名前, 　学年, 　入室, 　退室, 　帰宅, 　　timestamp")
-    
+
     st_db_info = st.empty()
 
 
@@ -123,7 +123,7 @@ def main():
                     st_name.text(name)
 
                     
-                    update_leaving_room_and_timestamp(c, name, "O")
+                    update_out_of_the_room_and_timestamp(c, name, "O")
                         
         # Streamlit上で画像を表示
         st_image.image(frame, channels="BGR", width=640)

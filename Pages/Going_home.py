@@ -1,4 +1,4 @@
-# 顔認識を行い、入室処理を行うページ
+# 顔認識を行い、帰宅処理を行うページ
 
 import streamlit as st
 import cv2
@@ -21,9 +21,9 @@ def load_known_faces(directory="known_faces"):
 
     return known_faces, known_names
 
-def update_leaving_room_and_timestamp(cursor, name, new_leaving_room):
+def update_going_home_and_timestamp(cursor, name, new_leaving_room):
     # ユーザーのデータを取得
-    select_query = "SELECT Leaving_The_Room FROM user_records WHERE name = ?"
+    select_query = "SELECT Going_home FROM user_records WHERE name = ?"
     cursor.execute(select_query, (name,))
     current_leaving_room = cursor.fetchone()
 
@@ -38,13 +38,13 @@ def update_leaving_room_and_timestamp(cursor, name, new_leaving_room):
         return
 
     # 更新クエリの実行
-    update_query = "UPDATE user_records SET Leaving_The_Room = 'O', Out_Of_The_Room = 'X', Going_home= 'X', timestamp = ? WHERE name = ?"
+    update_query = "UPDATE user_records SET Leaving_The_Room = 'X', Out_Of_The_Room = 'X', Going_home= 'O', timestamp = ? WHERE name = ?"
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     data = (timestamp, name)
 
     try:
         cursor.execute(update_query, data)
-        st.write(name, "データが更新されました。")
+        print(name, "データが更新されました。")
     except sqlite3.Error as e:
         print(f"エラー: {e}")
 
@@ -66,7 +66,7 @@ def display_all_records(records, st_element):
 
 
 def main():
-    st.title("入室")
+    st.title("帰宅")
 
     conn = sqlite3.connect("Lab_menber.db")
     c = conn.cursor()
@@ -123,7 +123,7 @@ def main():
                     st_name.text(name)
 
                     
-                    update_leaving_room_and_timestamp(c, name, "O")
+                    update_going_home_and_timestamp(c, name, "O")
                         
         # Streamlit上で画像を表示
         st_image.image(frame, channels="BGR", width=640)
