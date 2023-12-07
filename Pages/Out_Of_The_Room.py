@@ -55,7 +55,7 @@ def get_all_records(cursor):
     records = cursor.fetchall()
     return records
 
-def display_all_records(records, st_db_info):
+def display_all_records(records, st_element):
 
     # データベースのレコードを表示
     for i in range(len(records)):
