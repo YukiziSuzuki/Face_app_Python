@@ -7,15 +7,25 @@ import numpy as np
 import os
 import sqlite3
 from datetime import datetime
+from PIL import Image
 
 def load_known_faces(directory="known_faces"):
     known_faces = []
     known_names = []
 
     for filename in os.listdir(directory):
+        print(os.path.join(directory, filename))
         path = os.path.join(directory, filename)
+
         image = face_recognition.load_image_file(path)
-        encoding = face_recognition.face_encodings(image)[0]
+        #encoding = face_recognition.face_encodings(image)[0]
+        face_encodings = face_recognition.face_encodings(image)
+        if not face_encodings:
+            print(f"エラー: {filename} から顔を検出できません。")
+            continue
+
+        encoding = face_encodings[0]
+
         known_faces.append(encoding)
         known_names.append(os.path.splitext(filename)[0])
 
@@ -50,7 +60,7 @@ def update_leaving_room_and_timestamp(cursor, name, new_leaving_room):
 
 
 def get_all_records(cursor):
-    select_all_query = "SELECT * FROM user_records"
+    select_all_query = "SELECT * FROM user_records ORDER BY year DESC"
     cursor.execute(select_all_query)
     records = cursor.fetchall()
     return records
@@ -68,7 +78,7 @@ def display_all_records(records, st_element):
 def main():
     st.title("入室")
 
-    conn = sqlite3.connect("Lab_menber.db")
+    conn = sqlite3.connect("Lab_member.db")
     c = conn.cursor()
 
 
@@ -89,7 +99,7 @@ def main():
     st.write("ID, 　　名前, 　学年, 　入室, 　退室, 　帰宅, 　　timestamp")
     
     st_db_info = []
-    for i in range(10):
+    for i in range(50):
         st_db_info.append(st.empty())
 
 
@@ -115,7 +125,7 @@ def main():
 
             if matches[best_match_index]:
                 # 近似度が一定以下の場合、"Unknown"を表示
-                if face_distances[best_match_index] > 0.4:
+                if face_distances[best_match_index] > 0.3:
                     name = "Unknown"
                     st_name.text(name)
                 else:

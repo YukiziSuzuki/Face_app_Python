@@ -13,13 +13,20 @@ def load_known_faces(directory="known_faces"):
     known_names = []
 
     for filename in os.listdir(directory):
+        print(os.path.join(directory, filename))
         path = os.path.join(directory, filename)
+
         image = face_recognition.load_image_file(path)
-        encoding = face_recognition.face_encodings(image)[0]
+        #encoding = face_recognition.face_encodings(image)[0]
+        face_encodings = face_recognition.face_encodings(image)
+        if not face_encodings:
+            print(f"エラー: {filename} から顔を検出できません。")
+            continue
+
+        encoding = face_encodings[0]
+
         known_faces.append(encoding)
         known_names.append(os.path.splitext(filename)[0])
-
-    return known_faces, known_names
 
 def update_going_home_and_timestamp(cursor, name, new_leaving_room):
     # ユーザーのデータを取得
@@ -88,7 +95,7 @@ def main():
     st.write("ID, 　　名前, 　学年, 　入室, 　退室, 　帰宅, 　　timestamp")
     
     st_db_info = []
-    for i in range(10):
+    for i in range(50):
         st_db_info.append(st.empty())
 
 
